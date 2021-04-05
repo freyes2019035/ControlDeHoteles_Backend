@@ -1,7 +1,8 @@
 const userController = require('../controllers/users/users.controller')
 const router = require('express').Router()
+const mdAuth = require('../middlewares/auth.middleware');
 
-router.get('/users', userController.helloWord);
-
-
+router.put('/updateAccount', mdAuth.ensureAuth ,userController.updateUser);
+router.delete('/deleteAccount', mdAuth.ensureAuth ,userController.deleteUser);
+router.get('/getUsers', mdAuth.ensureAuth, userController.getUsers)
 module.exports = router;

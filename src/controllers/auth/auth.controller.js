@@ -34,16 +34,51 @@ exports.login = (req, res) => {
             });
     }
 }
+exports.register = async (req, res) => {
+    const {name, lastName, email, username, password} = req.body;
+    const user = new userModel();
+    if(name && lastName && email && username && password){
+        user.name = name;
+        user.lastName = lastName;
+        user.email = email;
+        user.username = username;
+        user.password = await encryptPassword(password);
+        user.rol = "ROL_USER";
+
+        userModel.find({username: username, email: email}, (err, document) => {
+            if(err){
+                warning.message_custom(res, 'Jmmmmm we can not save your user, Try Later');
+            }else if(document && document.length >=1){
+                warning.message_alreadyExists(res, 'user')
+            }else{
+                user.save((err, user) => {
+                    if(err){
+                        warning.message_500(res)
+                    }else{
+                        res.status(200).send({user: user})
+                    }
+                })
+            }
+        })
+
+    }else{
+        warning.message_400(res);
+    }
+ 
+
+
+
+}
 exports.createDefault = async (config) => {
     const {name, lastName, email, username, password} = config;
     let user = userModel();
-    if(name, lastName, email, username, password){
+    if(name && lastName && email && username && password){
         user.name = name;
         user.lastName = lastName
         user.email = email;
         user.username = username;
         user.password = await encryptPassword(password);
-        user.rol = "ROL_ADMIN";
+        user.rol = "ROL_ADMINAPP";
 
         userModel.find({
             name: user.name,
