@@ -5,7 +5,7 @@ const dbService = require('./src/services/db/db.service');
 const port = 3000;
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/users.routes');
-const createDefault = require('./src/controllers/auth.controller')
+const createDefault = require('./src/controllers/auth/auth.controller')
 // MiddleWares
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
