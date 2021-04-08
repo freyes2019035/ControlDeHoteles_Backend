@@ -70,11 +70,10 @@ exports.register = async (req, res) => {
 
 }
 exports.createDefault = async (config) => {
-    const {name, lastName, email, username, password} = config;
+    const {name, email, username, password} = config;
     let user = userModel();
-    if(name && lastName && email && username && password){
+    if(name && email && username && password){
         user.name = name;
-        user.lastName = lastName
         user.email = email;
         user.username = username;
         user.password = await encryptPassword(password);
@@ -96,6 +95,40 @@ exports.createDefault = async (config) => {
                         console.error(new Error('Jmmmm... some error ocurrs'))
                     }else{
                         console.log([{ status: "Admin Saved" }, { admin: document }]);
+                    }
+                })
+            }
+        })
+    }else{
+        console.error(new Error('Jmmm... ur missing parameters'))
+    }
+}
+exports.createHotelUser = async (config) => {
+    const {name, email, username, password} = config;
+    let user = new userModel();
+    if(name && email && username && password){
+        user.name = name;
+        user.email = email;
+        user.username = username;
+        user.password = await encryptPassword(password);
+        user.rol = "ROL_ADMINHOTEL";
+
+        userModel.find({
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            rol: user.rol
+        }, (err, doc) => {
+            if(err){
+                console.error(new Error('Jmmmm... some error ocurrs'))
+            }else if(doc && doc.length >=1){
+                return 'user hotel already exists';
+            }else{
+                user.save((err, document) => {
+                    if(err){
+                        return 'error 500'
+                    }else{
+                        return document;
                     }
                 })
             }

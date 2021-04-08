@@ -5,6 +5,7 @@ const dbService = require('./src/services/db/db.service');
 const port = 3000;
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/users.routes');
+const hotelRoutes = require('./src/routes/hotel.routes')
 const createDefault = require('./src/controllers/auth/auth.controller')
 // MiddleWares
 app.use(bodyParser.urlencoded({extended: false}))
@@ -14,6 +15,7 @@ app.use(morgan('dev'))
 // Routes
 app.use('/user', userRoutes)
 app.use('/auth', authRoutes)
+app.use('/hotel', hotelRoutes)
 // Views
 app.set('view engine', 'ejs');
 app.set('views', './src/utils/views');
@@ -23,7 +25,6 @@ const startAPP = (port) => {
         console.log(response)
         createDefault.createDefault({
         name: 'Admin',
-        lastName: 'Admin',
         email: 'admin@admin.com',
         username: 'ADMIN',
         password: '123456'

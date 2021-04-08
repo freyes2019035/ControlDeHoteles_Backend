@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const hotelModel = Schema({
     name: String,
     address: String,
-    phone: Number,
+    phone: String,
+    email: String,
     user: {type: Schema.Types.ObjectId, ref: 'users'},
     images: Array,
     creator: {type: Schema.Types.ObjectId, ref: 'users'},
