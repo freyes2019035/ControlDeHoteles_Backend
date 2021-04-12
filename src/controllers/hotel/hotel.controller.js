@@ -2,7 +2,7 @@ const hotelModel = require('../../models/hotel.model');
 const userModel = require('../../models/users.model')
 const authController = require('../auth/auth.controller');
 const warnings = require('../../utils/warnings/warnings.message');
-const moment = require('moment')
+const moment = require('moment');
 
 exports.createHotel = async (req, res) => {
     const user = req.user
@@ -47,6 +47,34 @@ exports.createHotel = async (req, res) => {
                 warnings.message_custom(res, error)
             })
             
+        }else{
+            warnings.message_400(res)
+        }
+    }else{
+        warnings.message_401(res)
+    }
+}
+exports.updateHotel = async (req, res) => {
+    const user = req.user
+    const hotel_id = req.params.id;
+    const body = req.body;
+    if(user.rol === "ROL_ADMINAPP"){
+        if(hotel_id && body){
+            delete body.creation_Date;
+            delete body.no_reservations;
+            delete body.creator;
+            delete body.user;
+            hotelModel.findByIdAndUpdate(hotel_id, body, {new: true},(err, docUpdate) => {
+                if(err){
+                    console.log(err)
+                    warnings.message_500(res)
+                }else if(!docUpdate){
+                    console.log(docUpdate)
+                    warnings.message_500(res)
+                }else{
+                    res.status(200).send(docUpdate)
+                }
+            });
         }else{
             warnings.message_400(res)
         }
