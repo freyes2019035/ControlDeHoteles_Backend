@@ -103,39 +103,41 @@ exports.createDefault = async (config) => {
         console.error(new Error('Jmmm... ur missing parameters'))
     }
 }
-exports.createHotelUser = async (config) => {
-    const {name, email, username, password} = config;
-    let user = new userModel();
-    if(name && email && username && password){
-        user.name = name;
-        user.email = email;
-        user.username = username;
-        user.password = await encryptPassword(password);
-        user.rol = "ROL_ADMINHOTEL";
-
-        userModel.find({
-            name: user.name,
-            email: user.email,
-            username: user.username,
-            rol: user.rol
-        }, (err, doc) => {
-            if(err){
-                console.error(new Error('Jmmmm... some error ocurrs'))
-            }else if(doc && doc.length >=1){
-                return 'user hotel already exists';
-            }else{
-                user.save((err, document) => {
-                    if(err){
-                        return 'error 500'
-                    }else{
-                        return document;
-                    }
-                })
-            }
-        })
-    }else{
-        console.error(new Error('Jmmm... ur missing parameters'))
-    }
+exports.createHotelUser = (config) => {
+    return new Promise(async (resolve, reject) => {
+        const {name, email, username, password} = config;
+        let user = new userModel();
+        if(name && email && username && password){
+            user.name = name;
+            user.email = email;
+            user.username = username;
+            user.password = await encryptPassword(password);
+            user.rol = "ROL_ADMINHOTEL";
+    
+            userModel.find({
+                name: user.name,
+                email: user.email,
+                username: user.username,
+                rol: user.rol
+            }, (err, doc) => {
+                if(err){
+                    reject('Jmmmm... some error ocurrs');
+                }else if(doc && doc.length >=1){
+                    reject('hotel already exists'); 
+                }else{
+                    user.save((err, document) => {
+                        if(err){
+                            reject('error 500')
+                        }else{
+                            resolve(document)
+                        }
+                    })
+                }
+            })
+        }else{
+            console.error(new Error('Jmmm... ur missing parameters'))
+        }
+    })
 }
 const encryptPassword = (password) => {
     return new Promise((resolve, reject) => {
