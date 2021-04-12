@@ -82,3 +82,63 @@ exports.updateHotel = async (req, res) => {
         warnings.message_401(res)
     }
 }
+/*Search functions*/
+exports.getHotels = async (req, res) => {
+    await hotelModel.find({}, (err, hotels) => {
+        if(err){
+            warnings.message_500(res)
+        }else{
+            res.status(200).send(hotels)
+        }
+    })
+}
+exports.getHotel = async(req, res) => {
+    const id = req.params.id;
+    if(id){
+        await hotelModel.findById(id, (err, hotel) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!hotel){
+                warnings.message_500(res)
+            }else{
+                res.status(200).send(hotel)
+            }
+        })
+    }else{
+        warnings.message_400(res)
+    }
+}
+exports.getHotelByName = async(req, res) => {
+    const {name} = req.body;
+    if(name){
+        hotelModel.find({name: name}, (err, doc) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(doc && doc.length === 0){
+                console.log(doc)
+                warnings.message_404(res, 'hotels')
+            }else {
+                res.status(200).send(doc)
+            }
+        });
+    }else{
+        warnings.message_400(res)
+    }
+}
+exports.getHotelByAdress = async(req, res) => {
+    const {address} = req.body;
+    if(address){
+        hotelModel.find({address: address}, (err, doc) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(doc && doc.length === 0){
+                console.log(doc)
+                warnings.message_404(res, 'hotels')
+            }else {
+                res.status(200).send(doc)
+            }
+        });
+    }else{
+        warnings.message_400(res)
+    }
+}
