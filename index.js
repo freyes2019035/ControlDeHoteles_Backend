@@ -33,7 +33,11 @@ const startAPP = (port) => {
             console.log(`Listening in port ${port}`)
         })
     }).catch(error => {
-        console.error(error)
+        console.error('Jmmmmm we can not connect to Mongo, Please check your database')
+        console.log('Retrying in 3 seconds')
+        setTimeout(() => {
+            startAPP(port)
+        }, 3000)
     })
 }
 

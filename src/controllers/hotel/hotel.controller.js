@@ -125,7 +125,7 @@ exports.getHotelByName = async(req, res) => {
         warnings.message_400(res)
     }
 }
-exports.getHotelByAdress = async(req, res) => {
+exports.getHotelByAddress = async(req, res) => {
     const {address} = req.body;
     if(address){
         hotelModel.find({address: address}, (err, doc) => {

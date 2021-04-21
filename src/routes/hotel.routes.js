@@ -5,7 +5,7 @@ const hotelController = require('../controllers/hotel/hotel.controller')
 
 router.get('/', hotelController.getHotels)
 router.get('/searchByName', hotelController.getHotelByName)
-router.get('/searchByAddress', hotelController.getHotelByAdress)
+router.get('/searchByAddress', hotelController.getHotelByAddress)
 router.get('/:id', hotelController.getHotel)
 router.post('/create', mdAuth.ensureAuth, hotelController.createHotel)
 router.put('/update/:id', mdAuth.ensureAuth, hotelController.updateHotel)
