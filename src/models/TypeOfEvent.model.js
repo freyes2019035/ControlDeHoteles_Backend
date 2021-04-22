@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const typeOfEventModel = Schema({
     name: String,
+    creator: {type: Schema.Types.ObjectId, ref: 'user'}
 })
 
 
