@@ -6,9 +6,9 @@ const hotelModel = Schema({
     address: String,
     phone: String,
     email: String,
-    user: {type: Schema.Types.ObjectId, ref: 'users'},
+    user: {type: Schema.Types.ObjectId, ref: 'user'},
     images: Array,
-    creator: {type: Schema.Types.ObjectId, ref: 'users'},
+    creator: {type: Schema.Types.ObjectId, ref: 'user'},
     creation_Date: Date,
     no_reservations: Number,
 })

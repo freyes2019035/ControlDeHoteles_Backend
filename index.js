@@ -6,6 +6,7 @@ const port = 3000;
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/users.routes');
 const hotelRoutes = require('./src/routes/hotel.routes')
+const roomRoutes = require('./src/routes/room.routes')
 const createDefault = require('./src/controllers/auth/auth.controller')
 // MiddleWares
 app.use(bodyParser.urlencoded({extended: false}))
@@ -16,6 +17,7 @@ app.use(morgan('dev'))
 app.use('/user', userRoutes)
 app.use('/auth', authRoutes)
 app.use('/hotel', hotelRoutes)
+app.use('/room', roomRoutes)
 // Views
 app.set('view engine', 'ejs');
 app.set('views', './src/utils/views');
