@@ -11,7 +11,7 @@ exports.createHotel = async (req, res) => {
         const user_id = user.sub;
         const creation_Date = moment().format();
         const username = name.split(' ')[0] + moment().format('yyyy');
-        const password = Math.random().toString(36).slice(-8);
+        const password = 123456;
         const hotel = new hotelModel();
         if(name && address && phone && email && images){
             authController.createHotelUser({name, email, username, password}).then(user => {

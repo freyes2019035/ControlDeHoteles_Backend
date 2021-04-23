@@ -9,6 +9,8 @@ const hotelRoutes = require('./src/routes/hotel.routes')
 const roomRoutes = require('./src/routes/room.routes')
 const TEvent = require('./src/routes/TypeOfEvent.routes')
 const event = require('./src/routes/event.routes')
+const services = require('./src/routes/services.routes')
+const reservation = require('./src/routes/reservation.routes')
 const createDefault = require('./src/controllers/auth/auth.controller')
 // MiddleWares
 app.use(bodyParser.urlencoded({extended: false}))
@@ -22,6 +24,8 @@ app.use('/hotel', hotelRoutes)
 app.use('/room', roomRoutes)
 app.use('/TEvent', TEvent)
 app.use('/event', event)
+app.use('/service', services)
+app.use('/reservation', reservation)
 // Views
 app.set('view engine', 'ejs');
 app.set('views', './src/utils/views');

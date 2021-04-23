@@ -9,4 +9,4 @@ const serviceModel = Schema({
     creator: {type: Schema.Types.ObjectId, ref: 'users'}
 });
 
-module.exports = mongoose.model(serviceModel, 'service')
+module.exports = mongoose.model('service', serviceModel)
