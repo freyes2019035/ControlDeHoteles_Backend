@@ -25,6 +25,8 @@ async function createRoom(req, res){
                         room.save(async (err, roomSaved) => {
                             if(err){
                                 warnings.message_500(res);
+                            }else if(!roomSaved){
+                                warnings.message_500(res)
                             }else{
                                 res.status(200).send(roomSaved)
                             }
@@ -49,6 +51,8 @@ async function updateRoom(req, res){
         roomModel.findByIdAndUpdate(room_id, body, {new: true}, (err, roomUpdated) => {
             if(err){
                 warnings.message_500(res)
+            }else if(!roomUpdated){
+                warnings.message_500(res)
             }else{
                 res.status(200).send(roomUpdated)
             }
@@ -64,6 +68,8 @@ async function deleteRoom(req, res){
         roomModel.findByIdAndDelete(room_id, (err, roomDeleted) => {
             if(err){
                 warnings.message_500(res)
+            }else if(!roomDeleted){
+                warnings.message_500(res)
             }else{
                 res.status(200).send(roomDeleted)
             }
@@ -75,6 +81,8 @@ async function deleteRoom(req, res){
 async function getRooms(req, res){
     roomModel.find({}, (err, rooms) => {
         if(err){
+            warnings.message_500(res)
+        }else if(!rooms){
             warnings.message_500(res)
         }else{
             res.status(200).send(rooms)
@@ -88,6 +96,8 @@ async function getRoom(req, res){
             console.log(err)
             warnings.message_500(res)
             
+        }else if(!room){
+            warnings.message_500(res)
         }else{
             res.status(200).send(room)
         }
