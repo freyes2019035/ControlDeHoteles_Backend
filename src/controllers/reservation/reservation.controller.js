@@ -3,6 +3,7 @@ const warnings = require('../../utils/warnings/warnings.message');
 const moment = require('moment')
 const roomModel = require('../../models/room.model');
 const recipeModel = require('../../models/recipe.model');
+const hotelModel = require('../../models/hotel.model')
 async function createReservation(req, res){
     const user = req.user;
     const { dateOfArrive, dateOfDeparture, roomID, hotel, services} = req.body;
@@ -33,25 +34,41 @@ async function createReservation(req, res){
                 }else if(reservationFound.length >= 1){
                     warnings.message_alreadyExists(res, 'reservation')
                 }else{
-                    reservation.save((err, reservation) => {
+                    hotelModel.find({_id: hotel}, (err, hotelFound) => {
                         if(err){
                             warnings.message_500(res)
-                        }else if(!reservation){
-                            warnings.message_500(res)
+                        }else if(hotelFound.length < 1){
+                            warnings.message_custom(res, 'Sorry we can find a hotel with that id')
                         }else{
-                            recipe.emision_date = today;
-                            recipe.reservation = reservation._id;
-                            recipe.user = user.sub;
-                            recipe.total = reservation.subTotalServices + reservation.subTotalRoom;
-                            recipe.save((err, recipe) => {
+                            hotelModel.findByIdAndUpdate(hotel, {no_reservations: hotelFound[0].no_reservations + 1}, (err, hotelUpdated) => {
                                 if(err){
                                     warnings.message_500(res)
-                                }else if(!recipe){
+                                }else if(!hotelUpdated){
                                     warnings.message_500(res)
                                 }else{
-                                    res.status(200).send([reservation, recipe])
+                                    reservation.save((err, reservation) => {
+                                        if(err){
+                                            warnings.message_500(res)
+                                        }else if(!reservation){
+                                            warnings.message_500(res)
+                                        }else{
+                                            recipe.emision_date = today;
+                                            recipe.reservation = reservation._id;
+                                            recipe.user = user.sub;
+                                            recipe.total = reservation.subTotalServices + reservation.subTotalRoom;
+                                            recipe.save((err, recipe) => {
+                                                if(err){
+                                                    warnings.message_500(res)
+                                                }else if(!recipe){
+                                                    warnings.message_500(res)
+                                                }else{
+                                                    res.status(200).send([reservation, recipe])
+                                                }
+                                            })
+                                        }
+                                    })
                                 }
-                            })
+                            });
                         }
                     })
                 }
