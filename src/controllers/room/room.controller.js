@@ -103,5 +103,18 @@ async function getRoom(req, res){
         }
     })
 }
+async function getRoomsOfHotel(req, res){
+    const id = req.params.id
+    roomModel.find({hotel: id}).exec((err, room) => {
+        if(err){
+            console.log(err)
+            warnings.message_500(res)
+        }else if(!room){
+            warnings.message_500(res)
+        }else{
+            res.status(200).send(room)
+        }
+    })
+}
 
-module.exports = {createRoom, updateRoom, deleteRoom, getRooms, getRoom}
+module.exports = {createRoom, updateRoom, deleteRoom, getRooms, getRoom, getRoomsOfHotel}

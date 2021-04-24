@@ -5,7 +5,7 @@ const reservationController = require('../controllers/reservation/reservation.co
 
 
 router.post('/create', md_auth.ensureAuth, reservationController.createReservation)
-
-
+router.put('/update/:id', md_auth.ensureAuth, reservationController.updateReservation)
+router.delete('/delete/:id', md_auth.ensureAuth, reservationController.deleteReservation)
 
 module.exports = router;

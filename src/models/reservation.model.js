@@ -8,7 +8,10 @@ const reservationModel = Schema({
     dateOfDeparture: Date,
     noOfDaysOfStay: Number,
     roomID: {type: Schema.Types.ObjectId, ref: 'room'},
-    services: [{type: Schema.Types.ObjectId, ref: 'service'}],
+    services: [{
+        service: {type: Schema.Types.ObjectId, ref: 'service'},
+        subTotal: Number
+    }],
     subTotalServices: Number,
     subTotalRoom: Number,
     hotel: {type: Schema.Types.ObjectId, ref: 'hotel'},
