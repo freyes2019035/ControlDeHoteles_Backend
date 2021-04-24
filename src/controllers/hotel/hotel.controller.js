@@ -1,5 +1,7 @@
 const hotelModel = require('../../models/hotel.model');
 const userModel = require('../../models/users.model')
+const reservationModel = require('../../models/reservation.model')
+const recipeModel = require('../../models/recipe.model')
 const authController = require('../auth/auth.controller');
 const warnings = require('../../utils/warnings/warnings.message');
 const moment = require('moment');
@@ -106,6 +108,23 @@ exports.getHotel = async(req, res) => {
         })
     }else{
         warnings.message_400(res)
+    }
+}
+exports.getHotelClients = async(req, res) => {
+    // ID de hotel
+    const user = req.user;
+    if(user.rol === "ROL_ADMINHOTEL"){
+        reservationModel.find({hotel: user.sub}).populate('user').exec((err, reservations) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!reservations){
+                warnings.message_404(res, 'reservations')
+            }else{
+                res.status(200).send(reservations)
+            }
+        })
+    }else{
+        warnings.message_401(res)
     }
 }
 exports.getHotelByName = async(req, res) => {

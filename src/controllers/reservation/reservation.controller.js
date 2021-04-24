@@ -124,6 +124,34 @@ async function deleteReservation(req, res){
     }
 
 }
+async function getAllReservations(req, res){
+    const user = req.user;
+    if(user.rol === "ROL_ADMINHOTEL"){
+        reservationModel.find({hotel: user.sub}, (err, reservations) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!reservations){
+                warnings.message_404(res, 'reservations')
+            }else{
+                res.status(200).send(reservations)
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
+}
+async function getAllMyReservations(req, res){
+    const user = req.user;
+    recipeModel.find({user: user.sub}, (err, reservations) => {
+        if(err){
+            warnings.message_500(res)
+        }else if(!reservations){
+            warnings.message_404(res, 'reservations')
+        }else{
+            res.status(200).send(reservations)
+        }
+    })
+}
 const calcTotal = (item) => {
     let total = 0;
     item.map(obj => {
@@ -133,4 +161,4 @@ const calcTotal = (item) => {
 }
 
 
-module.exports = { createReservation, updateReservation, deleteReservation } 
+module.exports = { createReservation, updateReservation, deleteReservation, getAllMyReservations, getAllReservations } 

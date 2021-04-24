@@ -4,6 +4,7 @@ const hotelController = require('../controllers/hotel/hotel.controller')
 
 
 router.get('/', hotelController.getHotels)
+router.get('/clients', mdAuth.ensureAuth, hotelController.getHotelClients)
 router.get('/searchByName', hotelController.getHotelByName)
 router.get('/searchByAddress', hotelController.getHotelByAddress)
 router.get('/:id', hotelController.getHotel)
