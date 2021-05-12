@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const app = require('express')();
 const morgan = require('morgan')
 const dbService = require('./src/services/db/db.service');
@@ -13,10 +14,12 @@ const services = require('./src/routes/services.routes')
 const reservation = require('./src/routes/reservation.routes')
 const createDefault = require('./src/controllers/auth/auth.controller')
 // MiddleWares
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
-
 // Routes
 app.use('/user', userRoutes)
 app.use('/auth', authRoutes)

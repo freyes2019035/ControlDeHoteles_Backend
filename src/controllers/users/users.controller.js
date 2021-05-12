@@ -18,6 +18,19 @@ exports.getUsers = (req, res) => {
         warning.message_401(res)
     }
 }
+exports.getUser = (req, res) => {
+    const userID = req.user.sub;
+    userModel.findById(userID, (err, user) => {
+        if(err){
+            warning.message_500(res)
+        }else if(!user){
+            console.log(user)
+            warning.message_500(res)
+        }else{
+            res.status(200).send(user)
+        }
+    })
+}
 exports.updateUser = (req, res) => {
     let body = req.body;
     let userID = req.user.sub;

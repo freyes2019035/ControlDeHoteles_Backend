@@ -8,7 +8,7 @@ const moment = require('moment');
 
 exports.createHotel = async (req, res) => {
     const user = req.user
-    const {name, address, phone, email, images} = req.body;
+    const {name, description ,address, phone, email, images} = req.body;
     if(user.rol === "ROL_ADMINAPP"){
         const user_id = user.sub;
         const creation_Date = moment().format();
@@ -16,9 +16,11 @@ exports.createHotel = async (req, res) => {
         const password = 123456;
         const hotel = new hotelModel();
         if(name && address && phone && email && images){
-            authController.createHotelUser({name, email, username, password}).then(user => {
+            authController.createHotelUser({name, description ,email, username, password}).then(user => {
                 const newUser = user;
                 hotel.name = name;
+                hotel.lastName = name+"_";
+                hotel.description = description;
                 hotel.address = address;
                 hotel.phone = phone;
                 hotel.email = email;
@@ -130,10 +132,12 @@ exports.getHotelClients = async(req, res) => {
 exports.getHotelByName = async(req, res) => {
     const {name} = req.body;
     if(name){
-        hotelModel.find({name: name}, (err, doc) => {
+        hotelModel.find({ name: { $regex: name, $options: "i" }}, (err, doc) => {
             if(err){
+                console.log(err)
                 warnings.message_500(res)
             }else if(doc && doc.length === 0){
+                console.log(name)
                 console.log(doc)
                 warnings.message_404(res, 'hotels')
             }else {
@@ -148,6 +152,23 @@ exports.getHotelByAddress = async(req, res) => {
     const {address} = req.body;
     if(address){
         hotelModel.find({address: address}, (err, doc) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(doc && doc.length === 0){
+                console.log(doc)
+                warnings.message_404(res, 'hotels')
+            }else {
+                res.status(200).send(doc)
+            }
+        });
+    }else{
+        warnings.message_400(res)
+    }
+}
+exports.getHotelByEmail = async(req, res) => {
+    const {email} = req.body;
+    if(email){
+        hotelModel.find({email: email}, (err, doc) => {
             if(err){
                 warnings.message_500(res)
             }else if(doc && doc.length === 0){

@@ -5,6 +5,7 @@ const serviceController = require('../controllers/services/services.controller')
 
 router.get('/', md_auth.ensureAuth, serviceController.getAllServices)
 router.get('/:id', md_auth.ensureAuth, serviceController.getService)
+router.get('/hotel/:id', md_auth.ensureAuth, serviceController.getServiceOfHotel)
 router.post('/create', md_auth.ensureAuth, serviceController.createService);
 router.put('/update/:id', md_auth.ensureAuth, serviceController.updateService)
 router.delete('/delete/:id', md_auth.ensureAuth, serviceController.deleteService)

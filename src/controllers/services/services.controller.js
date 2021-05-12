@@ -6,10 +6,10 @@ const e = require('express');
 async function createService(req, res) {
     const service = new serviceModel();
     const user = req.user;
-    const { name, price, description} = req.body;
+    const { name, price, description, hotel} = req.body;
     if(user.rol === "ROL_ADMINHOTEL"){
         if(name && price && description){
-            serviceModel.find({name: name, description: description, hotel: user.sub}, (err, serviceFound) => {
+            serviceModel.find({name: name, description: description, hotel: hotel}, (err, serviceFound) => {
                 if(err){
                     warning.message_500(res)
                 }else if(serviceFound.length >= 1){
@@ -19,7 +19,7 @@ async function createService(req, res) {
                     service.price = price;
                     service.description = description;
                     service.creator = user.sub;
-                    service.hotel = user.sub;
+                    service.hotel = hotel;
                     service.save(async (err, service) => {
                         if(err){
                             warning.message_500(res)
@@ -127,4 +127,16 @@ async function getService(req, res){
         }
     });
 }
-module.exports = { createService, updateService, deleteService, getAllServices,getService }
+async function getServiceOfHotel(req, res){
+    const id = req.params.id;
+    serviceModel.find({hotel: id}, (err, services) => {
+        if(err){
+            warning.message_500(res)
+        }else if(services.length < 1){
+            warning.message_404(res, 'services')
+        }else{
+            res.status(200).send(services)
+        }
+    });
+}
+module.exports = { createService, updateService, deleteService, getAllServices,getService, getServiceOfHotel }

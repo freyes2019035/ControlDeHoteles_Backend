@@ -3,6 +3,8 @@ const md_auth = require('../middlewares/auth.middleware');
 const reservationController = require('../controllers/reservation/reservation.controller');
 
 router.get('/', md_auth.ensureAuth, reservationController.getAllReservations)
+router.get('/all', md_auth.ensureAuth, reservationController.getAllTheReservations)
+router.get('/hotel/:id', md_auth.ensureAuth, reservationController.getAllTheReservationsOfHotel)
 router.get('/my', md_auth.ensureAuth, reservationController.getAllMyReservations)
 router.post('/create', md_auth.ensureAuth, reservationController.createReservation)
 router.put('/update/:id', md_auth.ensureAuth, reservationController.updateReservation)

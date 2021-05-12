@@ -10,7 +10,6 @@ exports.ensureAuth = (req, res, next) => {
         res.status(401).send({'status': 'Missing Authorization Header'})
     }
     var token = req.headers.authorization.replace(/['"]+/g, '')
-            
     try{
         var payload = jwt.decode(token, secret);
         // expiracion de token

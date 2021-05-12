@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const hotelModel = Schema({
     name: String,
+    description: String,
     address: String,
     phone: String,
     email: String,

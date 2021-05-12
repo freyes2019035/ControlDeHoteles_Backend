@@ -4,6 +4,8 @@ const moment = require('moment')
 const roomModel = require('../../models/room.model');
 const recipeModel = require('../../models/recipe.model');
 const hotelModel = require('../../models/hotel.model')
+const ObjectId = require('mongodb').ObjectID;
+
 async function createReservation(req, res){
     const user = req.user;
     const { dateOfArrive, dateOfDeparture, roomID, hotel, services} = req.body;
@@ -17,7 +19,7 @@ async function createReservation(req, res){
             reservation.subTotalServices = await calcTotal(services);
             reservation.dateOfArrive = dateOfArrive;
             reservation.dateOfDeparture = dateOfDeparture
-            const noOfDaysOfStay = Math.ceil(Math.abs(new Date(dateOfArrive) - new Date(dateOfDeparture)) / (1000 * 60 * 60 * 24)) - 1; 
+            const noOfDaysOfStay = Math.ceil(Math.abs(new Date(dateOfArrive) - new Date(dateOfDeparture)) / (1000 * 60 * 60 * 24)); 
             reservation.noOfDaysOfStay = noOfDaysOfStay;
             const room = await roomModel.findById(roomID);
             if(room){
@@ -28,7 +30,7 @@ async function createReservation(req, res){
             reservation.hotel = hotel;
             reservation.user = user.sub;
             
-            reservationModel.find({dateOfArrive: dateOfArrive,dateOfDeparture: dateOfDeparture,hotel: hotel,roomID: roomID}, (err, reservationFound) => {
+            reservationModel.find({dateOfArrive: dateOfArrive, dateOfDeparture: dateOfDeparture, hotel: hotel,roomID: roomID}, (err, reservationFound) => {
                 if(err){
                     warnings.message_500(res)
                 }else if(reservationFound.length >= 1){
@@ -159,7 +161,7 @@ async function getAllReservations(req, res){
 }
 async function getAllMyReservations(req, res){
     const user = req.user;
-    recipeModel.find({user: user.sub}, (err, reservations) => {
+    recipeModel.find({user: user.sub}).populate({ path : 'reservation', populate : {path : 'hotel'}, select: 'dateOfArrive dateOfDeparture noOfDaysOfStay'}).exec((err, reservations) => {
         if(err){
             warnings.message_500(res)
         }else if(!reservations){
@@ -168,6 +170,43 @@ async function getAllMyReservations(req, res){
             res.status(200).send(reservations)
         }
     })
+}
+async function getAllTheReservations(req, res){
+    const user = req.user;
+    if(user.rol === "ROL_ADMINHOTEL" || user.rol === "ROL_ADMINAPP"){
+        reservationModel.find((err, reservations) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!reservations){
+                warnings.message_404(res, 'reservations')
+            }else{
+                
+                res.status(200).send(reservations)
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
+}
+async function getAllTheReservationsOfHotel(req, res){
+    const user = req.user;
+    const hotelId = req.params.id;
+    console.log(hotelId);
+    if(user.rol === "ROL_ADMINHOTEL" || user.rol === "ROL_ADMINAPP"){
+        reservationModel.find({hotel: hotelId}).populate('hotel roomID user').exec((err, reservations) => {
+            if(err){
+                console.log(err)
+                warnings.message_500(res)
+            }else if(!reservations){
+                warnings.message_404(res, 'reservations')
+            }else{
+                
+                res.status(200).send(reservations)
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
 }
 const calcTotal = (item) => {
     let total = 0;
@@ -178,4 +217,4 @@ const calcTotal = (item) => {
 }
 
 
-module.exports = { createReservation, updateReservation, deleteReservation, getAllMyReservations, getAllReservations } 
+module.exports = { createReservation, updateReservation, deleteReservation, getAllMyReservations, getAllReservations, getAllTheReservations, getAllTheReservationsOfHotel } 

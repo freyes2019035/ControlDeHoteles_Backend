@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         user.password = await encryptPassword(password);
         user.rol = "ROL_USER";
 
-        userModel.find({username: username, email: email}, (err, document) => {
+        userModel.find({username: username, lastName: lastName,email: email}, (err, document) => {
             if(err){
                 warning.message_custom(res, 'Jmmmmm we can not save your user, Try Later');
             }else if(document && document.length >=1){
