@@ -6,7 +6,7 @@ const moment = require('moment')
 async function createEvent(req, res) {
     const { name, description, images ,typeOfEvent, hour, date, hotel } = req.body;
     const user = req.user;
-    if(user.rol === "ROL_ADMINAPP"){
+    if(user.rol === "ROL_ADMINHOTEL"){
         if( name && description && images && typeOfEvent && hour && date && hotel  ){
             let event = new eventModel();
            await eventModel.find({name: name, typeOfEvent: typeOfEvent, hotel: hotel}, (err, eventFound) => {

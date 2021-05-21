@@ -7,7 +7,7 @@ const e = require('express');
 async function createRoom(req, res){
     const user = req.user;
     const {name, price, images, hotel} = req.body;
-    if(user.rol === "ROL_ADMINAPP"){
+    if(user.rol === "ROL_ADMINHOTEL"){
         const room = new roomModel();
         await hotelModel.findById(hotel, (err, hotelFound) => {
             if(hotelFound){
