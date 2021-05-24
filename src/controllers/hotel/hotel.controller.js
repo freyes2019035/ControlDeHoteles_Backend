@@ -86,6 +86,42 @@ exports.updateHotel = async (req, res) => {
         warnings.message_401(res)
     }
 }
+exports.deleteHotel = async(req, res) => {
+    const id = req.params.id;
+    const user = req.user;
+    console.log(user)
+    if(user.rol === "ROL_ADMINAPP"){
+        hotelModel.findById(id, (err, docFound) => {
+            if(err){
+                warnings.message_500(res)
+            }else if(!docFound){
+                warnings.message_404(res)
+            }else{
+                let userId = docFound.user;
+                console.log(userId)
+                userModel.findByIdAndRemove(userId, (err, userDeleted) => {
+                    if(err){
+                        warnings.message_500(res)
+                    }else if(!userDeleted){
+                        warnings.message_404(res)
+                    }else{
+                        hotelModel.findByIdAndRemove(id, (err, doc) => {
+                            if(err){
+                                warnings.message_500(res)
+                            }else if(!doc){
+                                warnings.message_500(res)
+                            }else{
+                                res.status(200).send(doc);
+                            }
+                        });
+                    }
+                })
+            }
+        })
+    }else{
+        warnings.message_401(res)
+    }
+}
 /*Search functions*/
 exports.getHotels = async (req, res) => {
     await hotelModel.find({}, (err, hotels) => {
