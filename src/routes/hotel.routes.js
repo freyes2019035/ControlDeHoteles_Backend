@@ -12,6 +12,7 @@ router.delete('/delete/:id', mdAuth.ensureAuth, hotelController.deleteHotel)
 router.get('/:id', hotelController.getHotel)
 router.post('/create', mdAuth.ensureAuth, hotelController.createHotel)
 router.put('/update/:id', mdAuth.ensureAuth, hotelController.updateHotel)
+router.get('/:id/generate/pdf',mdAuth.ensureAuth, hotelController.generatePDF)
 
 
 module.exports = router;

@@ -2,9 +2,11 @@ const hotelModel = require('../../models/hotel.model');
 const userModel = require('../../models/users.model')
 const reservationModel = require('../../models/reservation.model')
 const recipeModel = require('../../models/recipe.model')
+const serviceModel = require('../../models/services.model')
 const authController = require('../auth/auth.controller');
 const warnings = require('../../utils/warnings/warnings.message');
 const moment = require('moment');
+const pdfGenerator = require('../../utils/pdf/pdf.generator')
 
 exports.createHotel = async (req, res) => {
     const user = req.user
@@ -216,5 +218,16 @@ exports.getHotelByEmail = async(req, res) => {
         });
     }else{
         warnings.message_400(res)
+    }
+}
+exports.generatePDF = async(req, res) => {
+    let obj = [];
+    let hotelId = req.params.id;
+    await hotelModel.find({_id: hotelId}).then(data => obj.push(data));
+    await serviceModel.find({hotel: hotelId}).then(data => obj.push(data));
+    if(obj){
+        pdfGenerator.generatePDF(obj).then(data => {
+            res.download(data.filename)
+        })
     }
 }
